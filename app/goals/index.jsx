@@ -1,3 +1,4 @@
+import Slider from "@react-native-community/slider";
 import { useState } from "react";
 import {
   FlatList,
@@ -13,6 +14,10 @@ import { useGoals } from "../../hooks/useGoals";
 const Goals = () => {
   const [selected, setSelected] = useState(null);
   const { goals } = useGoals();
+
+  const handleProgressChange = async (value) => {
+    console.log(value);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -37,6 +42,17 @@ const Goals = () => {
           <View style={styles.modal}>
             <Text style={styles.title}>{selected.goal}</Text>
             <Text>Adjust the progress of this goal:</Text>
+
+            <Slider
+              style={{ width: "80%", height: 40, marginVertical: 20 }}
+              value={selected.progress}
+              minimumValue={0}
+              maximumValue={100}
+              minimumTrackTintColor="#21cc8d"
+              maximumTrackTintColor="#ddd"
+              thumbTintColor="#21cc8d"
+              onSlidingComplete={handleProgressChange}
+            />
 
             <View style={styles.buttonsWrapper}>
               <Pressable style={styles.btn} onPress={() => setSelected(null)}>
