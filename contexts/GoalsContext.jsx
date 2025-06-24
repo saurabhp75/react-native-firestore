@@ -1,5 +1,5 @@
-import { addDoc, collection } from "firebase/firestore";
-import { createContext, useState } from "react";
+import { addDoc, collection, getDocs } from "firebase/firestore";
+import { createContext, useEffect, useState } from "react";
 import { db } from "../firebaseConfig";
 
 export const GoalsContext = createContext();
@@ -7,7 +7,15 @@ export const GoalsContext = createContext();
 export function GoalsProvider({ children }) {
   const [goals, setGoals] = useState([]);
 
-  async function fetchGoals() {}
+  async function fetchGoals() {
+    const snapshot = await getDocs(collection(db, "goals"));
+
+    const documents = snapshot.docs.map((doc) => {
+      return { ...doc.data(), id: doc.id };
+    });
+
+    setGoals(documents);
+  }
 
   async function createGoal(goalData) {
     console.log(goalData);
@@ -17,6 +25,10 @@ export function GoalsProvider({ children }) {
   async function deleteGoal() {}
 
   async function updateGoal() {}
+
+  useEffect(() => {
+    fetchGoals();
+  }, []);
 
   return (
     <GoalsContext.Provider
