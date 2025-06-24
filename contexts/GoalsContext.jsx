@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs, onSnapshot } from "firebase/firestore";
 import { createContext, useEffect, useState } from "react";
 import { db } from "../firebaseConfig";
 
@@ -27,7 +27,15 @@ export function GoalsProvider({ children }) {
   async function updateGoal() {}
 
   useEffect(() => {
-    fetchGoals();
+    const unsub = onSnapshot(collection(db, "goals"), (snapshot) => {
+      const documents = snapshot.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      });
+
+      setGoals(documents);
+    });
+
+    return () => unsub();
   }, []);
 
   return (
