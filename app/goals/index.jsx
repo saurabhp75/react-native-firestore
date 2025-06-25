@@ -13,10 +13,12 @@ import { useGoals } from "../../hooks/useGoals";
 
 const Goals = () => {
   const [selected, setSelected] = useState(null);
-  const { goals } = useGoals();
+  const { goals, updateGoal } = useGoals();
 
   const handleProgressChange = async (value) => {
     console.log(value);
+    console.log(selected.id);
+    await updateGoal(selected.id, { progress: value });
   };
 
   return (
