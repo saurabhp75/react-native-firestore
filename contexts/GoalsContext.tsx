@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   onSnapshot,
@@ -25,7 +26,7 @@ export interface GoalsContextType {
   goals: Goal[];
   fetchGoals: () => Promise<void>;
   createGoal: (goalData: GoalData) => Promise<void>;
-  deleteGoal: () => Promise<void>;
+  deleteGoal: (id: string) => Promise<void>;
   updateGoal: (id: string, updates: Partial<GoalData>) => Promise<void>;
 }
 
@@ -55,7 +56,9 @@ export function GoalsProvider({ children }: GoalsProviderProps) {
     await addDoc(collection(db, "goals"), goalData);
   }
 
-  async function deleteGoal() {}
+  async function deleteGoal(id: string) {
+    await deleteDoc(doc(db, "goals", id));
+  }
 
   async function updateGoal(id: string, updates: Partial<GoalData>) {
     await updateDoc(doc(db, "goals", id), { ...updates });

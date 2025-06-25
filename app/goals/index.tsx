@@ -9,12 +9,12 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useGoals } from "../../hooks/useGoals";
 import { Goal } from "../../contexts/GoalsContext";
+import { useGoals } from "../../hooks/useGoals";
 
 const Goals = () => {
   const [selected, setSelected] = useState<Goal | null>(null);
-  const { goals, updateGoal } = useGoals();
+  const { goals, updateGoal, deleteGoal } = useGoals();
 
   const handleProgressChange = async (value: number) => {
     if (!selected) return; // Guard clause to ensure selected is not null
@@ -22,6 +22,13 @@ const Goals = () => {
     console.log(value);
     console.log(selected.id);
     await updateGoal(selected.id, { progress: value });
+  };
+
+  const handleDelete = async () => {
+    if (!selected) return; // Guard clause to ensure selected is not null
+
+    await deleteGoal(selected.id);
+    setSelected(null);
   };
 
   return (
@@ -61,6 +68,12 @@ const Goals = () => {
             <View style={styles.buttonsWrapper}>
               <Pressable style={styles.btn} onPress={() => setSelected(null)}>
                 <Text style={{ color: "white" }}>Close</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.btn, styles.delete]}
+                onPress={handleDelete}
+              >
+                <Text style={{ color: "white" }}>Delete Goal</Text>
               </Pressable>
             </View>
           </View>
@@ -115,5 +128,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 16,
     backgroundColor: "#21cc8d",
+  },
+  delete: {
+    backgroundColor: "red",
   },
 });
