@@ -10,12 +10,15 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGoals } from "../../hooks/useGoals";
+import { Goal } from "../../contexts/GoalsContext";
 
 const Goals = () => {
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState<Goal | null>(null);
   const { goals, updateGoal } = useGoals();
 
-  const handleProgressChange = async (value) => {
+  const handleProgressChange = async (value: number) => {
+    if (!selected) return; // Guard clause to ensure selected is not null
+
     console.log(value);
     console.log(selected.id);
     await updateGoal(selected.id, { progress: value });
@@ -28,8 +31,7 @@ const Goals = () => {
       <FlatList
         data={goals}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.list}
-        renderItem={({ item }) => (
+        renderItem={({ item }: { item: Goal }) => (
           <Pressable onPress={() => setSelected(item)}>
             <View style={styles.goal}>
               <Text style={{ margin: 16 }}>{item.goal}</Text>
